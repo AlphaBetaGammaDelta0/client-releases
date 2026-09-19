@@ -1,0 +1,71 @@
+# Publish one project's build as a release on this repo.
+#
+# The private repos cannot see each other and do not each carry a copy of
+# this; they build their artifact, upload it, and call this workflow. That
+# way the shape of a release -- how it is tagged, what the notes say, what
+# the files are called -- is decided here, once, for every project.
+#
+# Everything shares one tag namespace, so the project name is part of the
+# tag rather than part of the story: amazon-hot-selling-v1.2.0, never v1.2.0.
+
+name: Publish a release
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: Short name of the project, used in the tag and the title
+        required: true
+        type: string
+      version:
+        description: Version being released, without a leading v
+        required: true
+        type: string
+      artifact:
+        description: Name of the uploaded artifact holding the files to publish
+        required: true
+        type: string
+        default: release
+      notes:
+        description: Release notes, in markdown. Left empty, GitHub writes them.
+        required: false
+        type: string
+        default: ""
+      prerelease:
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      releases_token:
+        description: Fine-grained PAT with contents:write on the releases repo
+        required: true
+
+permissions: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect the build
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact }}
+          path: dist
+
+      - name: Say what is being published
+        run: |
+          echo "${{ inputs.project }} ${{ inputs.version }}"
+          ls -lh dist
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          repository: AlphaBetaGammaDelta0/client-releases
+          token: ${{ secrets.releases_token }}
+          tag_name: ${{ inputs.project }}-v${{ inputs.version }}
+          name: ${{ inputs.project }} ${{ inputs.version }}
+          body: ${{ inputs.notes }}
+          generate_release_notes: ${{ inputs.notes == '' }}
+          prerelease: ${{ inputs.prerelease }}
+          files: dist/**
+          fail_on_unmatched_files: true
