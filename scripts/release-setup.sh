@@ -38,6 +38,8 @@ token=$(security find-generic-password -a "$ACCOUNT" -s "$SERVICE" -w 2>/dev/nul
 }
 
 for repo in "$@"; do
-  printf '%s' "$token" | gh secret set "$SECRET" --repo "$repo" --body -
+  # No --body: gh reads the value from stdin, so it never becomes an argument
+  # and never shows up in a process list.
+  printf '%s' "$token" | gh secret set "$SECRET" --repo "$repo"
   echo "$repo can publish"
 done
