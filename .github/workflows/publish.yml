@@ -22,10 +22,13 @@ on:
         required: true
         type: string
       artifact:
-        description: Name of the uploaded artifact holding the files to publish
-        required: true
+        description: >
+          Artifacts to publish, as a name or a wildcard. A project that builds
+          for several platforms uploads one artifact each and matches them all
+          here; they are merged into one set of files on the release.
+        required: false
         type: string
-        default: release
+        default: "release*"
       notes:
         description: Release notes, in markdown. Left empty, GitHub writes them.
         required: false
@@ -49,7 +52,8 @@ jobs:
       - name: Collect the build
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.artifact }}
+          pattern: ${{ inputs.artifact }}
+          merge-multiple: true
           path: dist
 
       - name: Say what is being published
