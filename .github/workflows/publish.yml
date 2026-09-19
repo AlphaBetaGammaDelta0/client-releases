@@ -64,7 +64,7 @@ jobs:
       - name: Publish
         uses: softprops/action-gh-release@v2
         with:
-          repository: AlphaBetaGammaDelta0/client-releases
+          repository: mabdurrafey1/client-releases
           token: ${{ secrets.releases_token }}
           tag_name: ${{ inputs.project }}-v${{ inputs.version }}
           name: ${{ inputs.project }} ${{ inputs.version }}

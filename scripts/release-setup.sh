@@ -7,7 +7,7 @@
 # into each new project as it is created.
 #
 #   ./scripts/release-setup.sh store                     # once, ever
-#   ./scripts/release-setup.sh AlphaBetaGammaDelta0/foo  # once per project
+#   ./scripts/release-setup.sh mabdurrafey1/foo  # once per project
 #
 # The value is piped straight from the Keychain to GitHub. It is never
 # printed, never written to a file, and never reaches your shell history.

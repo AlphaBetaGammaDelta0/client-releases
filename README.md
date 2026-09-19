@@ -26,7 +26,7 @@ Then the project's own workflow needs only:
 
     publish:
       needs: build
-      uses: AlphaBetaGammaDelta0/client-releases/.github/workflows/publish.yml@main
+      uses: mabdurrafey1/client-releases/.github/workflows/publish.yml@main
       with:
         project: <name>
         version: ${{ needs.build.outputs.version }}
